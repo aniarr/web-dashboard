@@ -1,0 +1,179 @@
+Create a modern, professional, fully responsive frontend UI for an AI Document Generation System. This is UI only. Do NOT implement backend or real authentication. Use only HTML, CSS, and JavaScript.
+
+This is a SaaS-style web application with two roles:
+
+• Member
+• Admin
+
+IMPORTANT ACCESS REQUIREMENT:
+
+• The Admin login must NOT be visible anywhere in the public UI
+• Do NOT show "Admin Login" button on landing page or navbar
+• Admin access must be possible only via a separate route like:
+
+/admin
+
+• Normal users should only see Member login
+• Admin dashboard should be completely separate UI
+
+Pages required:
+
+1. Landing Page (/)
+
+Include:
+
+• Navigation bar:
+
+Logo
+Menu:
+
+Home
+Features
+Pricing
+Login
+
+• Hero section:
+
+Title:
+AI Document Generation System
+
+Subtitle:
+Generate professional organizational reports instantly using AI
+
+Buttons:
+
+Get Started
+View Pricing
+
+• Features section
+
+• Pricing section with 3 plans:
+
+Basic
+Pro
+Enterprise
+
+Pricing cards with features and Subscribe button
+
+• Footer
+
+2. Member Login Page (/login)
+
+Include:
+
+• Email input
+• Password input
+• Login button
+
+Only Member login UI
+
+No Admin login visible
+
+3. Member Dashboard (/dashboard)
+
+Dashboard layout with sidebar:
+
+Menu:
+
+Dashboard
+Create Report
+History
+Settings
+Logout
+
+Create Report UI:
+
+• Textarea for entering event details
+• Generate button
+• Output preview area
+
+History UI:
+
+• Report list table/cards
+
+Settings UI:
+
+• Profile form
+• Password change form
+
+4. Admin Dashboard (/admin)
+
+This page exists but is NOT linked anywhere publicly.
+
+Admin dashboard UI with sidebar:
+
+Menu:
+
+Dashboard
+Create Report
+View Reports
+Members
+Settings
+Logout
+
+Admin Features UI:
+
+Create Report:
+
+Same generator UI
+
+View Reports:
+
+Reports table
+
+Members:
+
+Members list table
+Add Member button
+
+Settings:
+
+Admin profile UI
+
+Design Requirements:
+
+• Modern SaaS design
+• Sidebar dashboard
+• Clean professional look
+• Responsive:
+
+Desktop
+Tablet
+Mobile
+
+• Smooth animations
+• Hover effects
+
+Technical Requirements:
+
+Use:
+
+HTML
+CSS
+JavaScript
+
+Separate files:
+
+index.html
+login.html
+dashboard.html
+admin.html
+style.css
+script.js
+
+Color Theme:
+
+Primary:
+#1F3A5F
+
+Secondary:
+White
+Light Grey
+
+Add realistic placeholder content.
+
+Goal:
+
+The UI should look like a real production SaaS application.
+
+Admin access should be hidden from normal users.
