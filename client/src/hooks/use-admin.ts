@@ -3,9 +3,9 @@ import { User, Report } from "@shared/schema";
 
 // Mock admin data
 const mockMembers: User[] = [
-  { id: 1, email: "member@example.com", name: "Jane Doe", password: "", role: "member" },
-  { id: 3, email: "john@acme.inc", name: "John Smith", password: "", role: "member" },
-  { id: 4, email: "sarah@startup.io", name: "Sarah Jenkins", password: "", role: "member" },
+  { id: "1", email: "member@example.com", name: "Jane Doe", password: "", role: "member" },
+  { id: "3", email: "john@acme.inc", name: "John Smith", password: "", role: "member" },
+  { id: "4", email: "sarah@startup.io", name: "Sarah Jenkins", password: "", role: "member" },
 ];
 
 export function useAdminMembers() {
@@ -26,11 +26,11 @@ export function useAdminReports() {
       // Return cross-user mock reports
       return [
         {
-          id: 1, userId: 1, title: "Q3 Financial Summary", 
+          id: "1", userId: "1", title: "Q3 Financial Summary",
           details: "Analysis...", content: "...", createdAt: new Date()
         },
         {
-          id: 3, userId: 3, title: "Acme Expansion Plan", 
+          id: "3", userId: "3", title: "Acme Expansion Plan",
           details: "Plan...", content: "...", createdAt: new Date(Date.now() - 86400000)
         }
       ] as Report[];

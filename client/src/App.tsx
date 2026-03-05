@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 import MemberOverview from "@/pages/dashboard/Overview";
 import CreateReport from "@/pages/dashboard/CreateReport";
 import History from "@/pages/dashboard/History";
@@ -17,10 +18,10 @@ import { useAuth } from "@/hooks/use-auth";
 
 function ProtectedRoute({ component: Component, adminOnly = false }: { component: any, adminOnly?: boolean }) {
   const { isAuthenticated, isAdmin } = useAuth();
-  
+
   if (!isAuthenticated) return <Redirect to="/login" />;
   if (adminOnly && !isAdmin) return <Redirect to="/dashboard" />;
-  
+
   return <Component />;
 }
 
@@ -30,7 +31,8 @@ function Router() {
       {/* Public Routes */}
       <Route path="/" component={Landing} />
       <Route path="/login" component={Login} />
-      
+      <Route path="/signup" component={Signup} />
+
       {/* Member Dashboard */}
       <Route path="/dashboard">
         <ProtectedRoute component={MemberOverview} />

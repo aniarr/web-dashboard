@@ -5,7 +5,7 @@ import { User } from "@shared/schema";
 // MOCKED AUTH STATE for UI demonstration
 // In a real app, this would use React Query and hit /api/auth/me
 const MOCK_USER: User = {
-  id: 1,
+  id: "1",
   email: "member@example.com",
   password: "hashed",
   name: "Jane Doe",
@@ -13,7 +13,7 @@ const MOCK_USER: User = {
 };
 
 const MOCK_ADMIN: User = {
-  id: 2,
+  id: "2",
   email: "admin@example.com",
   password: "hashed",
   name: "Admin User",
@@ -32,19 +32,40 @@ export function useAuth() {
     setIsLoading(true);
     // Simulate network delay
     await new Promise(r => setTimeout(r, 1000));
-    
+
     let loggedInUser = MOCK_USER;
     if (email.includes("admin")) {
       loggedInUser = MOCK_ADMIN;
     } else {
       loggedInUser = { ...MOCK_USER, email };
     }
-    
+
     currentUser = loggedInUser;
     setUser(loggedInUser);
     setIsLoading(false);
-    
+
     if (loggedInUser.role === 'admin') {
+      setLocation('/admin');
+    } else {
+      setLocation('/dashboard');
+    }
+  };
+
+  const register = async (email: string, name: string, _password: string) => {
+    setIsLoading(true);
+    // Simulate network delay
+    await new Promise(r => setTimeout(r, 1000));
+
+    let newUser = { ...MOCK_USER, email, name, id: Date.now().toString() };
+    if (email.includes("admin")) {
+      newUser.role = "admin";
+    }
+
+    currentUser = newUser;
+    setUser(newUser);
+    setIsLoading(false);
+
+    if (newUser.role === 'admin') {
       setLocation('/admin');
     } else {
       setLocation('/dashboard');
@@ -61,6 +82,7 @@ export function useAuth() {
     user,
     isLoading,
     login,
+    register,
     logout,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin'

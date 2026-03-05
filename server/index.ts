@@ -2,6 +2,9 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -59,7 +62,18 @@ app.use((req, res, next) => {
   next();
 });
 
+import mongoose from "mongoose";
+
 (async () => {
+  try {
+    const mongoUri = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/docgen";
+    await mongoose.connect(mongoUri);
+    log(`Connected to MongoDB at ${mongoUri}`);
+  } catch (error) {
+    log(`MongoDB connection error: ${error}`);
+    process.exit(1);
+  }
+
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {

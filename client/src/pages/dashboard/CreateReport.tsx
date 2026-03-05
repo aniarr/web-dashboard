@@ -243,6 +243,9 @@ export default function CreateReport() {
                     <option>
                       Online
                     </option>
+                    <option>
+                      Hybrid
+                    </option>
                   </select>
                 </div>
 
