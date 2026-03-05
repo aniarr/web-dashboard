@@ -47,10 +47,10 @@ export default function Login() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="m@example.com" 
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="h-12 bg-background/50 focus:bg-background transition-colors rounded-xl"
@@ -62,8 +62,8 @@ export default function Login() {
                   <Label htmlFor="password">Password</Label>
                   <a href="#" className="text-sm font-medium text-primary hover:underline">Forgot password?</a>
                 </div>
-                <Input 
-                  id="password" 
+                <Input
+                  id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -71,8 +71,8 @@ export default function Login() {
                   required
                 />
               </div>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full h-12 rounded-xl text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
                 disabled={isLoading}
               >
@@ -83,7 +83,7 @@ export default function Login() {
           </CardContent>
           <CardFooter className="flex flex-col items-center justify-center border-t border-border/50 pt-6 mt-2 pb-8">
             <p className="text-sm text-muted-foreground">
-              Don't have an account? <a href="#" className="text-primary font-semibold hover:underline">Contact sales</a>
+              Don't have an account? <Link href="/signup" className="text-primary font-semibold hover:underline">Sign up</Link>
             </p>
             {/* Developer note for testing */}
             <p className="text-xs text-muted-foreground mt-4 text-center max-w-xs">

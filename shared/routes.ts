@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertReportSchema, reports, users } from './schema';
+import { insertReportSchema, type Report, type User } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -25,10 +25,26 @@ export const api = {
       }),
       responses: {
         200: z.object({
-          user: z.custom<typeof users.$inferSelect>(),
+          user: z.custom<User>(),
           token: z.string()
         }),
         401: errorSchemas.unauthorized,
+      }
+    },
+    register: {
+      method: 'POST' as const,
+      path: '/api/auth/register' as const,
+      input: z.object({
+        email: z.string().email(),
+        name: z.string(),
+        password: z.string(),
+      }),
+      responses: {
+        201: z.object({
+          user: z.custom<User>(),
+          token: z.string()
+        }),
+        400: errorSchemas.validation,
       }
     }
   },
@@ -37,7 +53,7 @@ export const api = {
       method: 'GET' as const,
       path: '/api/reports' as const,
       responses: {
-        200: z.array(z.custom<typeof reports.$inferSelect>()),
+        200: z.array(z.custom<Report>()),
       }
     },
     create: {
@@ -45,7 +61,7 @@ export const api = {
       path: '/api/reports' as const,
       input: insertReportSchema,
       responses: {
-        201: z.custom<typeof reports.$inferSelect>(),
+        201: z.custom<Report>(),
         400: errorSchemas.validation,
       }
     }
@@ -56,7 +72,7 @@ export const api = {
         method: 'GET' as const,
         path: '/api/admin/members' as const,
         responses: {
-          200: z.array(z.custom<typeof users.$inferSelect>()),
+          200: z.array(z.custom<User>()),
         }
       }
     },
@@ -65,7 +81,7 @@ export const api = {
         method: 'GET' as const,
         path: '/api/admin/reports' as const,
         responses: {
-          200: z.array(z.custom<typeof reports.$inferSelect>()),
+          200: z.array(z.custom<Report>()),
         }
       }
     }
