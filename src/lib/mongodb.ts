@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/docgen";
+function normalizeMongoUri(uri: string) {
+  return uri.replace(/^(mongodb(?:\+srv)?:\/\/[^/]+)\/\/+/, "$1/");
+}
+
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error("Missing required environment variable: DATABASE_URL");
+}
+
+const MONGODB_URI = normalizeMongoUri(databaseUrl);
 
 declare global {
   var mongooseCache:
