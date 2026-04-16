@@ -298,9 +298,9 @@ export default function HomePage() {
                       <div>
                         <h3 className="font-semibold">Office Address</h3>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          123 Innovation Drive, Suite 400<br />
-                          San Francisco, CA 94102<br />
-                          United States
+                          Inovus Labs IEDC<br />
+                          Kristu Jyoti College of Management & Technology<br />
+                          Chethipuzha P.O, Changanacherry, Kottayam, Kerala, India.
                         </p>
                       </div>
                     </div>
@@ -312,9 +312,8 @@ export default function HomePage() {
                       <div>
                         <h3 className="font-semibold">Email Us</h3>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          <a href="mailto:hello@mrdocgen.com" className="hover:text-primary transition-colors">hello@mrdocgen.com</a><br />
-                          <a href="mailto:support@mrdocgen.com" className="hover:text-primary transition-colors">support@mrdocgen.com</a><br />
-                          <a href="mailto:sales@mrdocgen.com" className="hover:text-primary transition-colors">sales@mrdocgen.com</a>
+                          <a href="mailto:inovuslabs@kjcmt.ac.in" className="hover:text-primary transition-colors">inovuslabs@kjcmt.ac.in</a><br />
+                          <a href="mailto:contact.inovus@gmail.com" className="hover:text-primary transition-colors">contact.inovus@gmail.com</a><br />
                         </p>
                       </div>
                     </div>
@@ -326,8 +325,7 @@ export default function HomePage() {
                       <div>
                         <h3 className="font-semibold">Call Us</h3>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          <a href="tel:+14155551234" className="hover:text-primary transition-colors">+1 (415) 555-1234</a><br />
-                          <span className="text-xs">Mon - Fri, 9AM - 6PM PST</span>
+                          <a href="tel:+919188550674" className="hover:text-primary transition-colors">+91 9188550674</a><br />
                         </p>
                       </div>
                     </div>

@@ -60,8 +60,8 @@ export default function SuperAdminAuditLogsPage() {
   return (
     <DashboardLayout mode="super_admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Audit Logs</h1>
-        <p className="mt-1 text-muted-foreground">Review platform history and administrative activity.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Audit Logs</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">Review platform history and administrative activity.</p>
       </div>
 
       <Card>
@@ -89,13 +89,13 @@ export default function SuperAdminAuditLogsPage() {
               {filteredLogs.map((log) => (
                 <div key={log.id} className="rounded-lg border p-4">
                   <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <p className="font-medium">{log.message}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {log.action} · {log.entityType} · {log.actorEmail ?? "system"} · {log.actorRole ?? "system"}
+                    <div className="min-w-0">
+                      <p className="font-medium break-words md:truncate">{log.message}</p>
+                      <p className="text-sm text-muted-foreground break-words">
+                        {log.action} · {log.entityType} · {log.actorEmail ?? "system"}
                       </p>
                     </div>
-                    <span className="text-xs text-muted-foreground">{new Date(log.createdAt).toLocaleString()}</span>
+                    <span className="text-xs text-muted-foreground shrink-0">{new Date(log.createdAt).toLocaleString()}</span>
                   </div>
                 </div>
               ))}

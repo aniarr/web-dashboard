@@ -81,8 +81,8 @@ export default function SuperAdminAnalyticsPage() {
   return (
     <DashboardLayout mode="super_admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Platform Analytics</h1>
-        <p className="mt-1 text-muted-foreground">A high-level operational snapshot of the complete platform.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Platform Analytics</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">A high-level operational snapshot of the complete platform.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

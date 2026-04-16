@@ -14,8 +14,10 @@ import {
   SidebarMenuItem, 
   SidebarMenuButton,
   SidebarHeader,
-  SidebarFooter
+  SidebarFooter,
+  SidebarTrigger
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { 
   Activity, 
@@ -75,7 +77,7 @@ export function DashboardLayout({ children, mode = "member" }: DashboardLayoutPr
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
                 <Activity className="w-5 h-5" />
               </div>
-              <span className="font-bold text-xl tracking-tight text-foreground">Doc Gen</span>
+              <span className="font-bold text-xl tracking-tight text-foreground">Mr DocGen</span>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -126,7 +128,15 @@ export function DashboardLayout({ children, mode = "member" }: DashboardLayoutPr
         </Sidebar>
         
         <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-6 lg:p-8">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 md:hidden">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <div className="flex items-center gap-2">
+              <Activity className="w-5 h-5 text-primary" />
+              <span className="font-bold">Mr DocGen</span>
+            </div>
+          </header>
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
             <div className="max-w-6xl mx-auto w-full">
               {children}
             </div>

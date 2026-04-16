@@ -109,8 +109,8 @@ export default function SuperAdminOrganizationsPage() {
   return (
     <DashboardLayout mode="super_admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Manage Organizations</h1>
-        <p className="mt-1 text-muted-foreground">Create and control the organizations that structure your platform.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Manage Organizations</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">Create and control the organizations that structure your platform.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1.1fr_1.9fr]">
@@ -158,10 +158,10 @@ export default function SuperAdminOrganizationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="pl-6">Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead className="pl-6">Organization</TableHead>
+                  <TableHead className="hidden sm:table-cell">Slug</TableHead>
+                  <TableHead className="hidden md:table-cell">Status</TableHead>
+                  <TableHead className="hidden lg:table-cell">Description</TableHead>
                   <TableHead className="pr-6 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -170,20 +170,37 @@ export default function SuperAdminOrganizationsPage() {
                   <>
                     {[1, 2, 3, 4, 5].map((i) => (
                       <TableRow key={i}>
-                        <TableCell className="pl-6"><Skeleton className="h-4 w-32" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                        <TableCell className="pl-6">
+                          <Skeleton className="h-4 w-32 mb-2" />
+                          <Skeleton className="h-3 w-20 sm:hidden" />
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                        <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
+                        <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-40" /></TableCell>
                         <TableCell className="pr-6"><Skeleton className="ml-auto h-8 w-16" /></TableCell>
                       </TableRow>
                     ))}
                   </>
                 ) : organizations?.map((organization) => (
                   <TableRow key={organization.id}>
-                    <TableCell className="pl-6 font-medium">{organization.name}</TableCell>
-                    <TableCell>{organization.slug}</TableCell>
-                    <TableCell>{organization.isActive ? "active" : "inactive"}</TableCell>
-                    <TableCell className="max-w-[280px] truncate">{organization.description || "-"}</TableCell>
+                    <TableCell className="pl-6">
+                      <div className="flex flex-col">
+                        <span className="font-medium">{organization.name}</span>
+                        <span className="text-xs text-muted-foreground sm:hidden">{organization.slug}</span>
+                        <div className="mt-1 flex gap-2 sm:hidden">
+                          <span className={`rounded-full px-2 py-0.5 text-[10px] ${organization.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                            {organization.isActive ? "active" : "inactive"}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">{organization.slug}</TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <span className={`rounded-full px-2 py-1 text-xs ${organization.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                        {organization.isActive ? "active" : "inactive"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell max-w-[280px] truncate">{organization.description || "-"}</TableCell>
                     <TableCell className="pr-6 text-right">
                       <div className="flex justify-end gap-2">
                         <Button

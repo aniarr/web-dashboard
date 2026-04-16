@@ -38,6 +38,16 @@ export default function SuperAdminUsersPage() {
     setMounted(true);
   }, []);
 
+  const filteredUsers = useMemo(() => {
+    return (users ?? []).filter((managedUser) => {
+      const matchesSearch =
+        managedUser.name.toLowerCase().includes(search.toLowerCase()) ||
+        managedUser.email.toLowerCase().includes(search.toLowerCase());
+      const matchesRole = roleFilter === "all" || managedUser.role === roleFilter;
+      return matchesSearch && matchesRole;
+    });
+  }, [roleFilter, search, users]);
+
   if (!mounted || authLoading || !user) {
     return (
       <DashboardLayout mode="super_admin">
@@ -103,16 +113,6 @@ export default function SuperAdminUsersPage() {
     setForm({ name: "", email: "", password: "", role: "member", organizationId: "" });
   };
 
-  const filteredUsers = useMemo(() => {
-    return (users ?? []).filter((managedUser) => {
-      const matchesSearch =
-        managedUser.name.toLowerCase().includes(search.toLowerCase()) ||
-        managedUser.email.toLowerCase().includes(search.toLowerCase());
-      const matchesRole = roleFilter === "all" || managedUser.role === roleFilter;
-      return matchesSearch && matchesRole;
-    });
-  }, [roleFilter, search, users]);
-
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
@@ -147,8 +147,8 @@ export default function SuperAdminUsersPage() {
   return (
     <DashboardLayout mode="super_admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Manage Users</h1>
-        <p className="mt-1 text-muted-foreground">Create, update, and remove member, admin, and super admin accounts.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Manage Users</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">Create, update, and remove member, admin, and super admin accounts.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1.1fr_1.9fr]">
@@ -219,10 +219,9 @@ export default function SuperAdminUsersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="pl-6">Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Organization</TableHead>
+                  <TableHead className="pl-6">User Info</TableHead>
+                  <TableHead className="hidden sm:table-cell">Role</TableHead>
+                  <TableHead className="hidden lg:table-cell">Organization</TableHead>
                   <TableHead className="pr-6 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -231,25 +230,35 @@ export default function SuperAdminUsersPage() {
                   <>
                     {[1, 2, 3, 4, 5].map((i) => (
                       <TableRow key={i}>
-                        <TableCell className="pl-6"><Skeleton className="h-4 w-32" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell className="pl-6">
+                          <Skeleton className="h-4 w-32 mb-2" />
+                          <Skeleton className="h-3 w-40 sm:hidden" />
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
+                        <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
                         <TableCell className="pr-6"><Skeleton className="ml-auto h-8 w-16" /></TableCell>
                       </TableRow>
                     ))}
                   </>
                 ) : filteredUsers.map((managedUser) => (
                   <TableRow key={managedUser.id}>
-                    <TableCell className="pl-6 font-medium">{managedUser.name}</TableCell>
-                    <TableCell>{managedUser.email}</TableCell>
-                    <TableCell>{managedUser.role}</TableCell>
-                    <TableCell>{organizations?.find((organization) => organization.id === managedUser.organizationId)?.name ?? "-"}</TableCell>
+                    <TableCell className="pl-6">
+                      <div className="flex flex-col">
+                        <span className="font-medium">{managedUser.name}</span>
+                        <span className="text-xs text-muted-foreground sm:text-sm">{managedUser.email}</span>
+                        <span className="mt-1 sm:hidden inline-flex w-fit rounded-full bg-secondary px-2 py-0.5 text-[10px]">{managedUser.role}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">{managedUser.role}</TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      {organizations?.find((organization) => organization.id === managedUser.organizationId)?.name ?? "-"}
+                    </TableCell>
                     <TableCell className="pr-6 text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end gap-1 sm:gap-2">
                         <Button
                           variant="ghost"
                           size="icon"
+                          className="h-8 w-8"
                           onClick={() => {
                             setEditingUser(managedUser);
                             setForm({
@@ -266,6 +275,7 @@ export default function SuperAdminUsersPage() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          className="h-8 w-8"
                           onClick={async () => {
                             try {
                               await deleteUser.mutateAsync(managedUser.id);

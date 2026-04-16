@@ -93,8 +93,8 @@ export default function SuperAdminOverviewPage() {
   return (
     <DashboardLayout mode="super_admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Super Admin Control Center</h1>
-        <p className="mt-1 text-muted-foreground">Manage the full platform: users, organizations, analytics, and system-level access.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Super Admin Control Center</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">Manage the full platform: users, organizations, analytics, and system-level access.</p>
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -118,17 +118,17 @@ export default function SuperAdminOverviewPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {users?.slice(0, 5).map((managedUser) => (
-              <div key={managedUser.id} className="flex items-center justify-between border-b pb-3 last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
+              <div key={managedUser.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 last:border-0 gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
                     {managedUser.name.charAt(0)}
                   </div>
-                  <div>
-                    <p className="font-medium">{managedUser.name}</p>
-                    <p className="text-sm text-muted-foreground">{managedUser.email}</p>
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{managedUser.name}</p>
+                    <p className="text-sm text-muted-foreground truncate">{managedUser.email}</p>
                   </div>
                 </div>
-                <span className="rounded-full bg-secondary px-2 py-1 text-xs">{managedUser.role}</span>
+                <span className="w-fit rounded-full bg-secondary px-2 py-1 text-xs">{managedUser.role}</span>
               </div>
             ))}
           </CardContent>
@@ -140,17 +140,17 @@ export default function SuperAdminOverviewPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {organizations?.slice(0, 5).map((organization) => (
-              <div key={organization.id} className="flex items-center justify-between border-b pb-3 last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary font-semibold text-secondary-foreground">
+              <div key={organization.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 last:border-0 gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-semibold text-secondary-foreground">
                     <Activity className="h-4 w-4" />
                   </div>
-                  <div>
-                    <p className="font-medium">{organization.name}</p>
-                    <p className="text-sm text-muted-foreground">{organization.slug}</p>
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{organization.name}</p>
+                    <p className="text-sm text-muted-foreground truncate">{organization.slug}</p>
                   </div>
                 </div>
-                <span className={`rounded-full px-2 py-1 text-xs ${organization.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                <span className={`w-fit rounded-full px-2 py-1 text-xs ${organization.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                   {organization.isActive ? "active" : "inactive"}
                 </span>
               </div>

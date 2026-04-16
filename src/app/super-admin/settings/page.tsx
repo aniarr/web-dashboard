@@ -126,8 +126,8 @@ export default function SuperAdminSettingsPage() {
   return (
     <DashboardLayout mode="super_admin">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Super Admin Settings</h1>
-        <p className="mt-1 text-muted-foreground">Reserved for global site settings and platform-wide configuration.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Super Admin Settings</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">Reserved for global site settings and platform-wide configuration.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1.2fr_1fr]">
@@ -247,14 +247,14 @@ export default function SuperAdminSettingsPage() {
                       />
                     </div>
                   )}
-                  <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between rounded-lg border p-4 gap-4">
                     <div>
                       <p className="font-medium">Allow public signup</p>
                       <p className="text-sm text-muted-foreground">Control whether users can self-register.</p>
                     </div>
                     <Switch checked={form.allowPublicSignup} onCheckedChange={(checked) => setForm((current) => ({ ...current, allowPublicSignup: checked }))} />
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between rounded-lg border p-4 gap-4">
                     <div>
                       <p className="font-medium">Require organization for users</p>
                       <p className="text-sm text-muted-foreground">Force new users to be created only with organization assignment.</p>
@@ -293,11 +293,11 @@ export default function SuperAdminSettingsPage() {
             ) : (
               logs?.map((log) => (
                 <div key={log.id} className="border-b pb-3 last:border-0">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-medium">{log.message}</p>
-                    <span className="text-xs text-muted-foreground">{new Date(log.createdAt).toLocaleString()}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <p className="font-medium break-words">{log.message}</p>
+                    <span className="text-xs text-muted-foreground shrink-0">{new Date(log.createdAt).toLocaleString()}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground break-words">
                     {log.action} | {log.entityType} | {log.actorEmail ?? "system"}
                   </p>
                 </div>
