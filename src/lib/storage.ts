@@ -13,6 +13,7 @@ import type {
   User,
 } from "@/lib/schema";
 import { connectToDatabase } from "@/lib/mongodb";
+import { generateReportAI } from "@/lib/gemini";
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -341,8 +342,14 @@ export async function getScopedReportsForAdmin(adminUser: User) {
   });
 }
 
-export function generateReportContent(details: string) {
-  return `Generated comprehensive report based on: "${details}".\n\nThis entails a detailed breakdown of the strategic objectives, key performance indicators, and actionable insights derived from the provided context. The automated analysis highlights significant opportunities for growth and potential risk factors to mitigate.`;
+export async function generateReportContent(details: string) {
+  try {
+    const data = JSON.parse(details);
+    const keywords = `${data.title}, ${data.report}, ${data.outcome}`;
+    return await generateReportAI(keywords);
+  } catch {
+    return await generateReportAI(details);
+  }
 }
 
 export async function deleteReport(id: string) {
@@ -352,9 +359,10 @@ export async function deleteReport(id: string) {
 
 export async function createReport(input: InsertReport) {
   await connectToDatabase();
+  const content = await generateReportContent(input.details);
   const report = new ReportModel({
     ...input,
-    content: generateReportContent(input.details),
+    content,
   });
   await report.save();
   return report.toJSON() as Report;
