@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   role: { type: String, enum: ["member", "admin", "super_admin"], default: "member" },
   organizationId: { type: String, default: undefined },
+  organizationIds: { type: [String], default: [] },
 });
 
 const reportSchema = new mongoose.Schema({
@@ -171,23 +172,27 @@ export async function ensureSeedData() {
   if (existingUsers.length < 2) {
     if (!existingUsers.find((u) => u.email === "admin@example.com")) {
       const hashedPassword = await bcrypt.hash("password", 10);
+      const orgId = String(defaultOrganization._id);
       await new UserModel({
         email: "admin@example.com",
         password: hashedPassword,
         name: "Admin User",
         role: "admin",
-        organizationId: String(defaultOrganization._id),
+        organizationId: orgId,
+        organizationIds: [orgId],
       }).save();
     }
 
     if (!memberUser) {
       const hashedPassword = await bcrypt.hash("password", 10);
+      const orgId = String(defaultOrganization._id);
       memberUser = await new UserModel({
         email: "member@example.com",
         password: hashedPassword,
         name: "Member User",
         role: "member",
-        organizationId: String(defaultOrganization._id),
+        organizationId: orgId,
+        organizationIds: [orgId],
       }).save();
     }
   }
@@ -226,10 +231,17 @@ export async function getUserByEmail(email: string) {
 export async function createUser(input: InsertUser) {
   await connectToDatabase();
   const hashedPassword = await bcrypt.hash(input.password, 10);
+  
+  const organizationIds = input.organizationIds || [];
+  if (input.organizationId && !organizationIds.includes(input.organizationId)) {
+    organizationIds.push(input.organizationId);
+  }
+
   const user = new UserModel({
     ...input,
     password: hashedPassword,
     role: input.role ?? "member",
+    organizationIds,
   });
   await user.save();
   return user.toJSON() as User;
@@ -339,6 +351,12 @@ export async function createReport(input: InsertReport) {
 
 export async function previewReport(details: string) {
   return generateReportContent(details);
+}
+
+export async function getOrganizationsByIds(ids: string[]) {
+  await connectToDatabase();
+  const organizations = await OrganizationModel.find({ _id: { $in: ids } }).sort({ createdAt: -1 });
+  return organizations.map((organization) => organization.toJSON() as Organization);
 }
 
 export async function getOrganizations() {

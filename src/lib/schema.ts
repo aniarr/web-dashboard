@@ -8,6 +8,7 @@ export const insertUserSchema = z.object({
   name: z.string().min(1),
   role: roleSchema.default("member").optional(),
   organizationId: z.string().optional(),
+  organizationIds: z.array(z.string()).default([]).optional(),
 });
 
 export const insertReportSchema = z.object({

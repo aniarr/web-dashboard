@@ -32,6 +32,7 @@ import {
   ScrollText
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { OrgSwitcher } from "@/components/OrgSwitcher";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -45,6 +46,7 @@ export function DashboardLayout({ children, mode = "member" }: DashboardLayoutPr
   const memberItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "Create Report", url: "/dashboard/create", icon: FileText },
+    { title: "Organization", url: "/dashboard/organization", icon: Building2 },
     { title: "History", url: "/dashboard/history", icon: History },
     { title: "Settings", url: "/dashboard/settings", icon: Settings },
   ];
@@ -52,6 +54,7 @@ export function DashboardLayout({ children, mode = "member" }: DashboardLayoutPr
   const adminItems = [
     { title: "Overview", url: "/admin", icon: LayoutDashboard },
     { title: "Create Report", url: "/admin/create", icon: FileText },
+    { title: "Organization", url: "/dashboard/organization", icon: Building2 },
     { title: "View Reports", url: "/admin/reports", icon: History },
     { title: "Members", url: "/admin/members", icon: Users },
     { title: "Settings", url: "/admin/settings", icon: Settings },
@@ -73,11 +76,14 @@ export function DashboardLayout({ children, mode = "member" }: DashboardLayoutPr
       <div className="flex min-h-screen w-full bg-background">
         <Sidebar variant="sidebar" className="border-r">
           <SidebarHeader className="p-4">
-            <div className="flex items-center gap-2 px-2">
+            <div className="flex items-center gap-2 px-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
                 <Activity className="w-5 h-5" />
               </div>
               <span className="font-bold text-xl tracking-tight text-foreground">Mr DocGen</span>
+            </div>
+            <div className="px-2">
+              {user?.role !== "super_admin" && <OrgSwitcher />}
             </div>
           </SidebarHeader>
           <SidebarContent>
