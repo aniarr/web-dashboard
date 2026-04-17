@@ -33,11 +33,20 @@ export async function POST(request: Request) {
         newOrgIds.push(organization.id);
     }
 
-    // If the user was a member, maybe they should become an admin of their own org?
-    // For now, keep their role but link it.
+    // Add to admin list for this specific org
+    const newAdminOrgIds = [...(user.adminOrganizationIds || [])];
+    if (!newAdminOrgIds.includes(organization.id)) {
+        newAdminOrgIds.push(organization.id);
+    }
+    
+    // Set role to admin for the current session/active state
+    const newRole = user.role === "super_admin" ? "super_admin" : "admin";
+    
     await updateUser(user.id, { 
         organizationIds: newOrgIds,
-        organizationId: organization.id 
+        organizationId: organization.id,
+        role: newRole,
+        adminOrganizationIds: newAdminOrgIds
     });
 
     return NextResponse.json(organization);

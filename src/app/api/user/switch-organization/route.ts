@@ -22,7 +22,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: "Organization not found" }, { status: 404 });
     }
 
-    await updateUser(user.id, { organizationId });
+    let newRole = user.role;
+    if (user.role !== "super_admin") {
+      newRole = (user.adminOrganizationIds || []).includes(organizationId) ? "admin" : "member";
+    }
+
+    await updateUser(user.id, { organizationId, role: newRole });
     return NextResponse.json({ success: true, organizationId });
   } catch (error) {
     return NextResponse.json({ message: "Failed to switch organization" }, { status: 500 });

@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["member", "admin", "super_admin"], default: "member" },
   organizationId: { type: String, default: undefined },
   organizationIds: { type: [String], default: [] },
+  adminOrganizationIds: { type: [String], default: [] },
 });
 
 const reportSchema = new mongoose.Schema({
@@ -233,6 +234,8 @@ export async function createUser(input: InsertUser) {
   const hashedPassword = await bcrypt.hash(input.password, 10);
   
   const organizationIds = input.organizationIds || [];
+  const adminOrganizationIds = input.adminOrganizationIds || [];
+  
   if (input.organizationId && !organizationIds.includes(input.organizationId)) {
     organizationIds.push(input.organizationId);
   }
@@ -242,6 +245,7 @@ export async function createUser(input: InsertUser) {
     password: hashedPassword,
     role: input.role ?? "member",
     organizationIds,
+    adminOrganizationIds,
   });
   await user.save();
   return user.toJSON() as User;

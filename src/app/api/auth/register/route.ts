@@ -17,9 +17,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Public signup is disabled" }, { status: 403 });
     }
     const input = registerSchema.parse(await request.json());
-    if (settings?.requireOrganizationForUsers) {
-      return NextResponse.json({ message: "Users must be created by a super admin with an organization assignment" }, { status: 403 });
-    }
     const existingUser = await getUserByEmail(input.email);
 
     if (existingUser) {

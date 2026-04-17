@@ -36,6 +36,10 @@ export async function POST(request: Request) {
       }
     }
 
+    if (input.role === "admin" && input.organizationId) {
+      input.adminOrganizationIds = [input.organizationId];
+    }
+
     const existing = await getUserByEmail(input.email);
     if (existing) {
       return NextResponse.json({ message: "Email already in use", field: "email" }, { status: 400 });

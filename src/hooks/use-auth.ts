@@ -50,7 +50,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       setUser(data.user);
       await queryClient.invalidateQueries();
-      router.push(data.user.role === "super_admin" ? "/super-admin" : data.user.role === "admin" ? "/admin" : "/dashboard");
+      const destination = data.user.role === "super_admin" 
+        ? "/super-admin" 
+        : (!data.user.organizationId ? "/setup/pricing" : (data.user.role === "admin" ? "/admin" : "/dashboard"));
+        
+      router.push(destination);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +69,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       setUser(data.user);
       await queryClient.invalidateQueries();
-      router.push(data.user.role === "super_admin" ? "/super-admin" : data.user.role === "admin" ? "/admin" : "/dashboard");
+      
+      const destination = data.user.role === "super_admin" 
+        ? "/super-admin" 
+        : (!data.user.organizationId ? "/setup/pricing" : (data.user.role === "admin" ? "/admin" : "/dashboard"));
+
+      router.push(destination);
     } finally {
       setIsLoading(false);
     }
@@ -124,6 +133,11 @@ export function useRequireAuth(adminOnly = false, superAdminOnly = false) {
 
     if (!auth.user) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    if (auth.user && auth.user.role !== "super_admin" && !auth.user.organizationId && !pathname.startsWith("/setup")) {
+      router.replace("/setup/pricing");
       return;
     }
 
