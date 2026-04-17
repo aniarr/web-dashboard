@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   organizationId: { type: String, default: undefined },
   organizationIds: { type: [String], default: [] },
   adminOrganizationIds: { type: [String], default: [] },
+  currentSessionId: { type: String, default: undefined },
 });
 
 const reportSchema = new mongoose.Schema({

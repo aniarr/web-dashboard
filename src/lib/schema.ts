@@ -10,6 +10,7 @@ export const insertUserSchema = z.object({
   organizationId: z.string().optional(),
   organizationIds: z.array(z.string()).default([]).optional(),
   adminOrganizationIds: z.array(z.string()).default([]).optional(),
+  currentSessionId: z.string().optional(),
 });
 
 export const insertReportSchema = z.object({
@@ -34,7 +35,7 @@ export const insertOrganizationSchema = z.object({
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = Omit<InsertUser, "role"> & { id: string; role: z.infer<typeof roleSchema> };
+export type User = Omit<InsertUser, "role"> & { id: string; role: z.infer<typeof roleSchema>; currentSessionId?: string };
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
 export type Report = InsertReport & { id: string; content: string; createdAt: string; userName?: string };

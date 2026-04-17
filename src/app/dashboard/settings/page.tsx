@@ -1,24 +1,50 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, Shield, UserCircle } from "lucide-react";
+import { Bell, Shield, UserCircle, Smartphone, Key, Monitor, History } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/http";
+import { Organization } from "@/lib/schema";
 
 export default function DashboardSettingsPage() {
   const [mounted, setMounted] = useState(false);
   const { user, isLoading } = useRequireAuth();
   const { toast } = useToast();
+  const [currentOrgName, setCurrentOrgName] = useState("Loading...");
+
+  const fetchOrgName = async () => {
+    if (!user) return;
+    try {
+      const orgs = await apiRequest<Organization[]>("/api/user/organizations");
+      // For super-admin, if they don't have a specific org linked, show 'Admin Panel' or similar
+      if (user.role === "super_admin" && !user.organizationId) {
+        setCurrentOrgName("Platform Super Admin");
+        return;
+      }
+      
+      const current = orgs.find((o: Organization) => String(o.id) === String(user.organizationId));
+      setCurrentOrgName(current?.name || "No Organization");
+    } catch (error) {
+      console.error("Failed to fetch organization name in settings:", error);
+      setCurrentOrgName("Error Loading Name");
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (user) fetchOrgName();
+  }, [user]);
 
   if (!mounted || isLoading || !user) {
     return (
@@ -27,13 +53,7 @@ export default function DashboardSettingsPage() {
           <Skeleton className="h-9 w-32" />
           <Skeleton className="h-5 w-48" />
         </div>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          <div className="space-y-2">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-10 w-full rounded-lg" />
-            ))}
-          </div>
-          <div className="space-y-6 md:col-span-3">
+        <div className="space-y-6 max-w-4xl">
             <Card>
               <CardHeader>
                 <Skeleton className="h-6 w-40" />
@@ -80,7 +100,6 @@ export default function DashboardSettingsPage() {
                 <Skeleton className="h-10 w-36" />
               </CardContent>
             </Card>
-          </div>
         </div>
       </DashboardLayout>
     );
@@ -98,26 +117,13 @@ export default function DashboardSettingsPage() {
         <p className="mt-1 text-muted-foreground">Manage your account preferences and profile.</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-        <div className="space-y-2">
-          <Button variant="secondary" className="w-full justify-start bg-secondary/80 text-foreground">
-            <UserCircle className="mr-2 h-4 w-4" />
-            Profile
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground">
-            <Shield className="mr-2 h-4 w-4" />
-            Security
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground">
-            <Bell className="mr-2 h-4 w-4" />
-            Notifications
-          </Button>
-        </div>
-
-        <div className="space-y-6 md:col-span-3">
+      <div className="space-y-8 max-w-4xl">
           <Card>
             <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <UserCircle className="h-5 w-5 text-primary" />
+                Personal Information
+              </CardTitle>
               <CardDescription>Update your personal details here.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -133,11 +139,18 @@ export default function DashboardSettingsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company">Company / Organization</Label>
-                  <Input id="company" defaultValue="Acme Corp" className="bg-background" />
+                  <Label htmlFor="company">Current Organization / Workspace</Label>
+                  <Input 
+                    id="company" 
+                    key={currentOrgName}
+                    defaultValue={currentOrgName} 
+                    disabled 
+                    className="bg-slate-50 font-medium text-slate-600 border-slate-200" 
+                  />
+                  <p className="text-[10px] text-muted-foreground italic">You can switch workspaces from the Organizations page.</p>
                 </div>
                 <div className="flex justify-end pt-4">
-                  <Button type="submit" className="rounded-xl">Save Changes</Button>
+                  <Button type="submit" className="rounded-xl px-8 font-bold">Update Profile</Button>
                 </div>
               </form>
             </CardContent>
@@ -145,7 +158,10 @@ export default function DashboardSettingsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Password</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5 text-primary" />
+                Password
+              </CardTitle>
               <CardDescription>Change your password to keep your account secure.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -170,7 +186,26 @@ export default function DashboardSettingsPage() {
               </form>
             </CardContent>
           </Card>
-        </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-primary" />
+                Active Sessions
+              </CardTitle>
+              <CardDescription>Manage your logged-in browsers and devices.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-4 p-4 border rounded-2xl bg-white/50">
+                <Monitor className="h-8 w-8 text-primary opacity-50" />
+                <div className="flex-1">
+                  <p className="font-bold">Current Browser Session</p>
+                  <p className="text-xs text-muted-foreground">Your active connection on this device.</p>
+                </div>
+                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 uppercase text-[10px]">active</Badge>
+              </div>
+            </CardContent>
+          </Card>
       </div>
     </DashboardLayout>
   );

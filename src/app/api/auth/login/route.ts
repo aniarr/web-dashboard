@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { createSession } from "@/lib/session";
-import { createAuditLog, ensureSeedData, getSiteSettings, getUserByEmail } from "@/lib/storage";
+import { createAuditLog, ensureSeedData, getSiteSettings, getUserByEmail, updateUser } from "@/lib/storage";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -26,7 +26,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Incorrect password", field: "password" }, { status: 401 });
     }
 
-    await createSession(user.id, user.role);
+    const sessionId = crypto.randomUUID();
+    await updateUser(user.id, { currentSessionId: sessionId });
+
+    await createSession(user.id, user.role, sessionId);
     await createAuditLog({
       actorUserId: user.id,
       actorEmail: user.email,

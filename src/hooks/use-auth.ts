@@ -4,6 +4,7 @@ import { createContext, createElement, useContext, useEffect, useMemo, useState 
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/http";
+import { useToast } from "@/hooks/use-toast";
 import type { User } from "@/lib/schema";
 
 type AuthContextValue = {
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,7 +32,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const data = await apiRequest<{ user: User }>("/api/auth/me", { method: "GET" });
       setUser(data.user);
-    } catch {
+    } catch (error: any) {
+      if (error?.message) {
+         try {
+           const body = JSON.parse(error.message);
+           if (body.code === "SESSION_EXPIRED_NEW_LOGIN") {
+             toast({
+               title: "New Login Detected",
+               description: "You have been logged out because someone logged in from another device.",
+               variant: "destructive"
+             });
+             router.push("/login?reason=session_expired");
+           }
+         } catch {}
+      }
       setUser(null);
     } finally {
       setIsLoading(false);
