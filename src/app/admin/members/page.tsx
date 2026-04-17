@@ -1,26 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { MoreHorizontal, Search, UserPlus } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { MoreHorizontal, Search, UserPlus, Pencil, Trash2 } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useAdminMembers } from "@/hooks/use-admin";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useAdminMembers, useCreateAdminMember, useDeleteAdminMember, useUpdateAdminMember } from "@/hooks/use-admin";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import type { User } from "@/lib/schema";
 
 export default function MembersPage() {
   const [mounted, setMounted] = useState(false);
   const { user, isLoading: authLoading } = useRequireAuth(true);
   const { data: members, isLoading } = useAdminMembers();
   const { toast } = useToast();
+  
+  const createMember = useCreateAdminMember();
+  const updateMember = useUpdateAdminMember();
+  const deleteMember = useDeleteAdminMember();
+
+  const [search, setSearch] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "member",
+  });
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const filteredMembers = useMemo(() => {
+    return (members ?? []).filter((member) => {
+      const matchesSearch =
+        member.name.toLowerCase().includes(search.toLowerCase()) ||
+        member.email.toLowerCase().includes(search.toLowerCase());
+      return matchesSearch;
+    });
+  }, [members, search]);
 
   if (!mounted || authLoading || !user) {
     return (
@@ -65,6 +96,41 @@ export default function MembersPage() {
     );
   }
 
+  const resetForm = () => {
+    setEditingUser(null);
+    setForm({ name: "", email: "", password: "", role: "member" });
+    setIsDialogOpen(false);
+  };
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      if (editingUser) {
+        await updateMember.mutateAsync({
+          id: editingUser.id,
+          data: {
+            name: form.name,
+            email: form.email,
+            role: form.role as User["role"],
+            ...(form.password ? { password: form.password } : {}),
+          },
+        });
+        toast({ title: "Member updated", description: "The member details were updated successfully." });
+      } else {
+        await createMember.mutateAsync({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          role: form.role as User["role"],
+        });
+        toast({ title: "Member created", description: "A new member has been added to your organization." });
+      }
+      resetForm();
+    } catch (error) {
+      toast({ title: "Action failed", description: error instanceof Error ? error.message : "Unable to save member", variant: "destructive" });
+    }
+  };
+
   return (
     <DashboardLayout mode="admin">
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
@@ -75,13 +141,50 @@ export default function MembersPage() {
         <div className="flex w-full items-center gap-4 md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search members..." className="pl-9 bg-background" />
+            <Input placeholder="Search members..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 bg-background" />
           </div>
-          <Button className="shrink-0 rounded-xl shadow-md" onClick={() => toast({ title: "Action mock", description: "Add member dialog would open here." })}>
+          <Button className="shrink-0 rounded-xl shadow-md" onClick={() => { setEditingUser(null); setIsDialogOpen(true); }}>
             <UserPlus className="mr-2 h-4 w-4" /> Add Member
           </Button>
         </div>
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={(open) => !open && resetForm()}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{editingUser ? "Edit Member" : "Add New Member"}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={submit} className="space-y-4 pt-4">
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" value={form.name} onChange={(e) => setForm((curr) => ({ ...curr, name: e.target.value }))} required />
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" value={form.email} onChange={(e) => setForm((curr) => ({ ...curr, email: e.target.value }))} required />
+            </div>
+            <div>
+              <Label htmlFor="password">{editingUser ? "New Password (optional)" : "Password"}</Label>
+              <Input id="password" type="password" value={form.password} onChange={(e) => setForm((curr) => ({ ...curr, password: e.target.value }))} required={!editingUser} />
+            </div>
+            <div>
+              <Label htmlFor="role">Role</Label>
+              <select id="role" value={form.role} onChange={(e) => setForm((curr) => ({ ...curr, role: e.target.value }))} className="h-10 w-full rounded-md border px-3 mt-1">
+                <option value="member">member</option>
+                <option value="admin">admin</option>
+              </select>
+            </div>
+            <div className="flex gap-3 justify-end mt-6">
+              <Button type="button" variant="outline" onClick={resetForm}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                {editingUser ? "Update" : "Create"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <Card>
         <CardContent className="p-0">
@@ -108,7 +211,13 @@ export default function MembersPage() {
                     </TableRow>
                   ))}
                 </>
-              ) : members?.map((member) => (
+              ) : filteredMembers?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-32 text-center text-muted-foreground font-medium">
+                    No members found matching your search.
+                  </TableCell>
+                </TableRow>
+              ) : filteredMembers?.map((member) => (
                 <TableRow key={member.id} className="hover:bg-muted/30">
                   <TableCell className="pl-6 py-4 font-medium">{member.name}</TableCell>
                   <TableCell className="text-muted-foreground">{member.email}</TableCell>
@@ -123,9 +232,42 @@ export default function MembersPage() {
                     </span>
                   </TableCell>
                   <TableCell className="pr-6 text-right">
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                       <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => {
+                            setEditingUser(member);
+                            setForm({
+                              name: member.name,
+                              email: member.email,
+                              password: "",
+                              role: member.role,
+                            });
+                            setIsDialogOpen(true);
+                          }}
+                        >
+                          <Pencil className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={async () => {
+                            if (confirm("Are you sure you want to remove this member?")) {
+                                try {
+                                  await deleteMember.mutateAsync(member.id);
+                                  toast({ title: "Member deleted", description: "The member was removed." });
+                                } catch (error) {
+                                  toast({ title: "Delete failed", description: error instanceof Error ? error.message : "Unable to delete member", variant: "destructive" });
+                                }
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

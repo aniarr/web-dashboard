@@ -272,13 +272,25 @@ export async function deleteUser(id: string) {
 export async function getReports() {
   await connectToDatabase();
   const reports = await ReportModel.find({}).sort({ createdAt: -1 });
-  return reports.map((report) => report.toJSON() as Report);
+  const users = await UserModel.find({});
+  const userMap = new Map(users.map((u) => [String(u._id), u.name]));
+  return reports.map((report) => {
+    const json = report.toJSON() as Report;
+    return { ...json, userName: userMap.get(json.userId) || "Unknown User" };
+  });
 }
 
 export async function getReportsByUser(userId: string) {
   await connectToDatabase();
-  const reports = await ReportModel.find({ userId }).sort({ createdAt: -1 });
-  return reports.map((report) => report.toJSON() as Report);
+  const [reports, user] = await Promise.all([
+    ReportModel.find({ userId }).sort({ createdAt: -1 }),
+    UserModel.findById(userId),
+  ]);
+  const userName = user ? user.name : "Unknown User";
+  return reports.map((report) => {
+    const json = report.toJSON() as Report;
+    return { ...json, userName };
+  });
 }
 
 export async function getScopedReportsForAdmin(adminUser: User) {
@@ -288,14 +300,22 @@ export async function getScopedReportsForAdmin(adminUser: User) {
     return getReports();
   }
 
-  const users = await UserModel.find(
-    adminUser.organizationId
-      ? { organizationId: adminUser.organizationId, role: { $ne: "super_admin" } }
-      : { organizationId: { $exists: false }, role: { $ne: "super_admin" } },
-  );
-  const userIds = users.map((user) => String(user._id));
+  const query = adminUser.organizationId
+    ? { organizationId: adminUser.organizationId, role: { $ne: "super_admin" } }
+    : { organizationId: { $exists: false }, role: { $ne: "super_admin" } };
+
+  const users = await UserModel.find(query);
+  const userMap = new Map(users.map((u) => [String(u._id), u.name]));
+  const userIds = Array.from(userMap.keys());
+  
   const reports = await ReportModel.find({ userId: { $in: userIds } }).sort({ createdAt: -1 });
-  return reports.map((report) => report.toJSON() as Report);
+  return reports.map((report) => {
+    const json = report.toJSON() as Report;
+    return {
+      ...json,
+      userName: userMap.get(json.userId) || "Unknown User",
+    };
+  });
 }
 
 export function generateReportContent(details: string) {

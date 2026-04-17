@@ -185,7 +185,7 @@ export default function AdminPage() {
                 <div key={report.id} className="flex flex-col gap-1 border-b pb-3 last:border-0 last:pb-0">
                   <p className="text-sm font-medium">{report.title}</p>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>By User #{report.userId}</span>
+                    <span>By {report.userName}</span>
                     <span>{new Date(report.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>

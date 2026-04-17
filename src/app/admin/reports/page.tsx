@@ -51,7 +51,8 @@ export default function AdminReportsPage() {
 
   const filteredReports = useMemo(() => {
     return (reports ?? []).filter(report => 
-      report.title.toLowerCase().includes(search.toLowerCase())
+      report.title.toLowerCase().includes(search.toLowerCase()) ||
+      (report.userName || "").toLowerCase().includes(search.toLowerCase())
     );
   }, [reports, search]);
 
@@ -114,6 +115,7 @@ export default function AdminReportsPage() {
               <TableHeader className="bg-secondary/50">
                 <TableRow>
                   <TableHead className="pl-6 py-4">Title</TableHead>
+                  <TableHead>Author</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead className="hidden md:table-cell">Metadata</TableHead>
                   <TableHead className="pr-6 text-right">Action</TableHead>
@@ -123,6 +125,7 @@ export default function AdminReportsPage() {
                 {[1, 2, 3, 4, 5].map((i) => (
                   <TableRow key={i}>
                     <TableCell className="pl-6 py-4"><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                     <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-40" /></TableCell>
                     <TableCell className="pr-6"><Skeleton className="ml-auto h-8 w-16" /></TableCell>
@@ -160,6 +163,7 @@ export default function AdminReportsPage() {
             <TableHeader className="bg-slate-100">
               <TableRow>
                 <TableHead className="pl-6 py-4 font-bold text-slate-700">TITLE</TableHead>
+                <TableHead className="font-bold text-slate-700">AUTHOR</TableHead>
                 <TableHead className="font-bold text-slate-700">DATE</TableHead>
                 <TableHead className="hidden md:table-cell font-bold text-slate-700">METADATA SUMMARY</TableHead>
                 <TableHead className="pr-6 text-right font-bold text-slate-700">ACTIONS</TableHead>
@@ -171,6 +175,7 @@ export default function AdminReportsPage() {
                   {[1, 2, 3, 4, 5].map((i) => (
                     <TableRow key={i}>
                       <TableCell className="pl-6 py-4"><Skeleton className="h-4 w-32" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                       <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                       <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-40" /></TableCell>
                       <TableCell className="pr-6"><Skeleton className="ml-auto h-8 w-16" /></TableCell>
@@ -179,7 +184,7 @@ export default function AdminReportsPage() {
                 </>
               ) : filteredReports?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-32 text-center text-muted-foreground font-medium">
+                  <TableCell colSpan={5} className="h-32 text-center text-muted-foreground font-medium">
                     No reports found matching your search.
                   </TableCell>
                 </TableRow>
@@ -191,6 +196,7 @@ export default function AdminReportsPage() {
                     </div>
                     {report.title}
                   </TableCell>
+                  <TableCell className="text-sm text-slate-700 font-medium">{report.userName}</TableCell>
                   <TableCell className="text-sm text-slate-500">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell className="hidden md:table-cell max-w-[300px] truncate text-xs text-slate-400 font-mono">
                     {report.details}
@@ -244,7 +250,7 @@ export default function AdminReportsPage() {
                     <DialogTitle className="text-xl font-bold text-slate-900">
                       {selectedReport.title}
                     </DialogTitle>
-                    <p className="text-xs text-slate-500 font-medium">Generated on {new Date(selectedReport.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-500 font-medium">Generated on {new Date(selectedReport.createdAt).toLocaleDateString()} | By {selectedReport.userName}</p>
                   </div>
                 </div>
                 <div className="flex gap-3">

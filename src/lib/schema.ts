@@ -34,7 +34,7 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = Omit<InsertUser, "role"> & { id: string; role: z.infer<typeof roleSchema> };
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
-export type Report = InsertReport & { id: string; content: string; createdAt: string };
+export type Report = InsertReport & { id: string; content: string; createdAt: string; userName?: string };
 
 export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
 export type Organization = InsertOrganization & { 

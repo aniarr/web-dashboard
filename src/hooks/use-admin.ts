@@ -38,3 +38,46 @@ export function useUpdateAdminOrganization() {
     },
   });
 }
+
+import type { InsertUser } from "@/lib/schema";
+
+export function useCreateAdminMember() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Partial<InsertUser>) =>
+      apiRequest<User>("/api/admin/members", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-members"] });
+    },
+  });
+}
+
+export function useUpdateAdminMember() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<InsertUser> }) =>
+      apiRequest<User>(`/api/admin/members/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-members"] });
+    },
+  });
+}
+
+export function useDeleteAdminMember() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiRequest<{ success: boolean }>(`/api/admin/members/${id}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-members"] });
+    },
+  });
+}
