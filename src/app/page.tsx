@@ -45,14 +45,30 @@ export default function HomePage() {
     }
 
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. We'll get back to you within 24 hours.",
-      variant: "default",
-    });
-    setForm({ name: "", email: "", inquiryPath: "", subject: "", message: "" });
-    setLoading(false);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) throw new Error("Failed to send message");
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. We'll get back to you within 24 hours.",
+        variant: "default",
+      });
+      setForm({ name: "", email: "", inquiryPath: "", subject: "", message: "" });
+    } catch (error) {
+      toast({
+        title: "Submission failed",
+        description: "There was an error sending your message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -331,7 +347,7 @@ export default function HomePage() {
                         <h3 className="font-semibold">Email Us</h3>
                         <p className="mt-1 text-sm text-muted-foreground">
                           <a href="mailto:inovuslabs@kjcmt.ac.in" className="hover:text-primary transition-colors">inovuslabs@kjcmt.ac.in</a><br />
-                          <a href="mailto:contact.inovus@gmail.com" className="hover:text-primary transition-colors">contact.inovus@gmail.com</a><br />
+                          <a href="mailto:contact.inovuslabs@gmail.com" className="hover:text-primary transition-colors">contact.inovuslabs@gmail.com</a><br />
                         </p>
                       </div>
                     </div>
