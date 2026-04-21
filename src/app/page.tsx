@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/http";
 
 const inquiryPaths = [
   { value: "general", label: "General Inquiry" },
@@ -46,13 +47,10 @@ export default function HomePage() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/contact", {
+      await apiRequest("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
-      if (!response.ok) throw new Error("Failed to send message");
 
       toast({
         title: "Message sent!",
@@ -60,10 +58,22 @@ export default function HomePage() {
         variant: "default",
       });
       setForm({ name: "", email: "", inquiryPath: "", subject: "", message: "" });
-    } catch (error) {
+    } catch (error: any) {
+      let errorMessage = "There was an error sending your message. Please try again later.";
+      
+      try {
+        const body = JSON.parse(error.message);
+        if (body.error) errorMessage = body.error;
+        else if (body.message) errorMessage = body.message;
+      } catch {
+        if (error.message && !error.message.includes("Unexpected token")) {
+          errorMessage = error.message;
+        }
+      }
+
       toast({
         title: "Submission failed",
-        description: "There was an error sending your message. Please try again later.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
