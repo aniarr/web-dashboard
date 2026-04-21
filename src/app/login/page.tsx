@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Activity, ArrowRight, AlertTriangle } from "lucide-react";
+import { Activity, ArrowRight, AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [settings, setSettings] = useState<SiteSettings | null>(null);
 
   useEffect(() => {
@@ -89,11 +90,29 @@ export default function LoginPage() {
                 <Input id="email" type="email" placeholder="m@example.com" value={email} onChange={(event) => setEmail(event.target.value)} className="h-12 rounded-xl bg-background/50 transition-colors focus:bg-background" required disabled={isMaintenanceMode} />
               </div>
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"} 
+                    value={password} 
+                    onChange={(event) => setPassword(event.target.value)} 
+                    className="h-12 rounded-xl bg-background/50 pr-12 transition-colors focus:bg-background" 
+                    required 
+                    disabled={isMaintenanceMode} 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground focus:outline-none"
+                    disabled={isMaintenanceMode}
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                <div className="flex justify-end">
                   <a href="#" className="text-sm font-medium text-primary hover:underline">Forgot password?</a>
                 </div>
-                <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="h-12 rounded-xl bg-background/50 transition-colors focus:bg-background" required disabled={isMaintenanceMode} />
               </div>
               <Button type="submit" className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base shadow-md transition-all hover:shadow-lg" disabled={isLoading || isMaintenanceMode}>
                 {isMaintenanceMode ? "Maintenance Mode" : isLoading ? "Signing in..." : "Sign In"}

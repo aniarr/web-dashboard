@@ -32,6 +32,9 @@ export const insertOrganizationSchema = z.object({
   headerImagePublicId: z.string().optional(),
   footerImagePublicId: z.string().optional(),
   plan: z.string().default("starter").optional(),
+  signatureLeftLabel: z.string().optional(),
+  signatureRightLabel: z.string().optional(),
+  signatureRightName: z.string().optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -51,6 +54,9 @@ export type Organization = InsertOrganization & {
   footerImage?: string;
   headerImagePublicId?: string;
   footerImagePublicId?: string;
+  signatureLeftLabel?: string;
+  signatureRightLabel?: string;
+  signatureRightName?: string;
 };
 
 export type SuperAdminStats = {
@@ -66,7 +72,6 @@ export type SuperAdminStats = {
 export const siteSettingsSchema = z.object({
   platformName: z.string().min(1),
   supportEmail: z.string().email(),
-  defaultOrganizationName: z.string().min(1),
   maintenanceMode: z.boolean().default(false),
   maintenanceMessage: z.string().default("The platform is currently in maintenance mode."),
   allowPublicSignup: z.boolean().default(true),

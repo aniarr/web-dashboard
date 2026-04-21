@@ -6,13 +6,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const cloudinaryUpload = async (file: string, publicId: string) => {
+export const cloudinaryUpload = async (file: string, publicId: string, folder = "docgen_branding") => {
   try {
     const result = await cloudinary.uploader.upload(file, {
       public_id: publicId,
       overwrite: true,
       invalidate: true,
-      folder: "docgen_branding",
+      folder: folder,
     });
     return {
       url: result.secure_url,

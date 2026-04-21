@@ -181,15 +181,22 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </>
-              ) : reports?.slice(0, 4).map((report) => (
-                <div key={report.id} className="flex flex-col gap-1 border-b pb-3 last:border-0 last:pb-0">
-                  <p className="text-sm font-medium">{report.title}</p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>By {report.userName}</span>
-                    <span>{new Date(report.createdAt).toLocaleDateString()}</span>
+              ) : reports && reports.length > 0 ? (
+                reports.slice(0, 4).map((report) => (
+                  <div key={report.id} className="flex flex-col gap-1 border-b pb-3 last:border-0 last:pb-0">
+                    <p className="text-sm font-medium">{report.title}</p>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>By {report.userName}</span>
+                      <span>{new Date(report.createdAt).toLocaleDateString()}</span>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="flex h-32 flex-col items-center justify-center gap-2 text-muted-foreground">
+                  <Activity className="h-8 w-8 opacity-20" />
+                  <p className="text-sm font-medium">No activity yet</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>

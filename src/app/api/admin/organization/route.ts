@@ -6,7 +6,7 @@ import { insertOrganizationSchema } from "@/lib/schema";
 export async function GET() {
   await ensureSeedData();
   const user = await getSessionUser();
-  if (!user || user.role !== "admin" || !user.organizationId) {
+  if (!user || !user.organizationId) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

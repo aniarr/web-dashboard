@@ -23,15 +23,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Organization not found" }, { status: 404 });
     }
 
-    // Rename convention: org_slug_type
-    const publicId = `${organization.slug}_${type}`;
+    // Folder structure: docgen_branding/org_slug
+    const folder = `docgen_branding/${organization.slug}`;
+    const publicId = type; // header or footer
     
     // Convert file to base64
     const buffer = Buffer.from(await file.arrayBuffer());
     const base64Image = `data:${file.type};base64,${buffer.toString("base64")}`;
 
     // Upload to Cloudinary
-    const result = await cloudinaryUpload(base64Image, publicId);
+    const result = await cloudinaryUpload(base64Image, publicId, folder);
 
     // Update database
     const updateData: any = {};

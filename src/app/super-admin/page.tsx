@@ -117,20 +117,27 @@ export default function SuperAdminOverviewPage() {
             <CardTitle>Recent Users</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {users?.slice(0, 5).map((managedUser) => (
-              <div key={managedUser.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 last:border-0 gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
-                    {managedUser.name.charAt(0)}
+            {users && users.length > 0 ? (
+              users.slice(0, 5).map((managedUser) => (
+                <div key={managedUser.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 last:border-0 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
+                      {managedUser.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{managedUser.name}</p>
+                      <p className="text-sm text-muted-foreground truncate">{managedUser.email}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{managedUser.name}</p>
-                    <p className="text-sm text-muted-foreground truncate">{managedUser.email}</p>
-                  </div>
+                  <span className="w-fit rounded-full bg-secondary px-2 py-1 text-xs">{managedUser.role}</span>
                 </div>
-                <span className="w-fit rounded-full bg-secondary px-2 py-1 text-xs">{managedUser.role}</span>
+              ))
+            ) : (
+              <div className="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
+                <Users className="h-8 w-8 opacity-20" />
+                <p className="text-sm font-medium">No users registered yet</p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
 
@@ -139,22 +146,29 @@ export default function SuperAdminOverviewPage() {
             <CardTitle>Organizations</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {organizations?.slice(0, 5).map((organization) => (
-              <div key={organization.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 last:border-0 gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-semibold text-secondary-foreground">
-                    <Activity className="h-4 w-4" />
+            {organizations && organizations.length > 0 ? (
+              organizations.slice(0, 5).map((organization) => (
+                <div key={organization.id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 last:border-0 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-semibold text-secondary-foreground">
+                      <Activity className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{organization.name}</p>
+                      <p className="text-sm text-muted-foreground truncate">{organization.slug}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{organization.name}</p>
-                    <p className="text-sm text-muted-foreground truncate">{organization.slug}</p>
-                  </div>
+                  <span className={`w-fit rounded-full px-2 py-1 text-xs ${organization.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                    {organization.isActive ? "active" : "inactive"}
+                  </span>
                 </div>
-                <span className={`w-fit rounded-full px-2 py-1 text-xs ${organization.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                  {organization.isActive ? "active" : "inactive"}
-                </span>
+              ))
+            ) : (
+              <div className="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
+                <Building2 className="h-8 w-8 opacity-20" />
+                <p className="text-sm font-medium">No organizations found</p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
       </div>

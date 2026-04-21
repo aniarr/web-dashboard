@@ -25,7 +25,6 @@ export default function SuperAdminSettingsPage() {
       SiteSettings,
       | "platformName"
       | "supportEmail"
-      | "defaultOrganizationName"
       | "maintenanceMode"
       | "maintenanceMessage"
       | "allowPublicSignup"
@@ -35,7 +34,6 @@ export default function SuperAdminSettingsPage() {
   >({
     platformName: "",
     supportEmail: "",
-    defaultOrganizationName: "",
     maintenanceMode: false,
     maintenanceMessage: "The platform is currently in maintenance mode.",
     allowPublicSignup: true,
@@ -49,7 +47,6 @@ export default function SuperAdminSettingsPage() {
       setForm({
         platformName: settings.platformName,
         supportEmail: settings.supportEmail,
-        defaultOrganizationName: settings.defaultOrganizationName,
         maintenanceMode: settings.maintenanceMode,
         maintenanceMessage: settings.maintenanceMessage ?? "The platform is currently in maintenance mode.",
         allowPublicSignup: settings.allowPublicSignup,
@@ -203,14 +200,7 @@ export default function SuperAdminSettingsPage() {
                     />
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="defaultOrganizationName">Default organization name</Label>
-                  <Input
-                    id="defaultOrganizationName"
-                    value={form.defaultOrganizationName}
-                    onChange={(event) => setForm((current) => ({ ...current, defaultOrganizationName: event.target.value }))}
-                  />
-                </div>
+
                 <div>
                   <Label htmlFor="defaultUserRole">Default signup role</Label>
                   <select
