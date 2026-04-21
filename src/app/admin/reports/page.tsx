@@ -371,27 +371,15 @@ export default function AdminReportsPage() {
                   className="mx-auto w-full max-w-[794px] min-h-[screen] md:min-h-[1123px] bg-white p-6 sm:p-12 md:p-[80px] md:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] relative text-black sm:rounded-sm md:border md:border-slate-300 transform-gpu"
                 >
                   <div className="border-2 border-slate-950 p-4 min-h-full flex flex-col" id="report-content">
-                    <div className="mb-6 sm:mb-8 text-center relative px-2" id="report-header">
+                    <div className="mb-8 text-center" id="report-header">
                       {organization?.headerImage ? (
-                        <div className="w-full h-auto overflow-hidden rounded-xl">
-                          <img 
-                            src={organization.headerImage} 
-                            className="w-full h-auto object-contain max-h-[160px]" 
-                            alt="Custom Organization Header" 
-                          />
-                        </div>
+                        <img src={organization.headerImage} className="w-full h-auto object-contain max-h-[160px]" alt="Organization header" />
                       ) : (
-                        <>
-                          <div className="hidden lg:block absolute top-0 right-0 text-[10px] font-mono text-slate-300 opacity-50">#REPORT-{String(selectedReport.id).slice(-6).toUpperCase()}</div>
-                          <img src="/favicon.png" className="mx-auto mb-3 h-14 w-14 sm:h-20 sm:w-20 object-contain" alt="College logo" />
-                          <h1 className="text-base sm:text-2xl font-black text-slate-900 tracking-tighter uppercase leading-tight">
-                            {organization?.headerTitle || "YOUR COLLEGE NAME"}
-                          </h1>
-                          <p className="text-[9px] sm:text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">
-                            {organization?.headerSubtitle || "Department of Computer Science"}
-                          </p>
-                          <div className="mt-3 h-1 w-12 sm:w-24 bg-primary/20 mx-auto rounded-full" />
-                        </>
+                        <div className="py-4">
+                          <img src="/favicon.png" className="mx-auto mb-2 h-16 object-contain" alt="Default logo" />
+                          <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">{organization?.name || "YOUR COLLEGE NAME"}</h1>
+                          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Department of {parsedDetails.department || "..."}</p>
+                        </div>
                       )}
                     </div>
 
@@ -399,55 +387,55 @@ export default function AdminReportsPage() {
                       <table className="w-full border-collapse border border-slate-300 text-sm mb-8">
                         <tbody>
                           <tr>
-                            <td className="w-1/3 border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Title of Activity</td>
-                            <td className="border border-slate-300 p-3 font-medium">{selectedReport.title}</td>
+                            <td className="w-1/3 border border-slate-300 p-3 font-bold bg-slate-50">Title of Activity</td>
+                            <td className="border border-slate-300 p-3">{selectedReport.title || "---"}</td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Date</td>
-                            <td className="border border-slate-300 p-3 font-medium">{parsedDetails.date || "-"}</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Date</td>
+                            <td className="border border-slate-300 p-3">{parsedDetails.date || "---"}</td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Department/Club/Cell</td>
-                            <td className="border border-slate-300 p-3 font-medium">{parsedDetails.department || "-"}</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Department/Club/Cell</td>
+                            <td className="border border-slate-300 p-3">{parsedDetails.department || "---"}</td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Student Participants</td>
-                            <td className="border border-slate-300 p-3 font-medium">{parsedDetails.students || "0"}</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Total Student Participants</td>
+                            <td className="border border-slate-300 p-3">{parsedDetails.students || "0"}</td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Faculty Participants</td>
-                            <td className="border border-slate-300 p-3 font-medium">{parsedDetails.faculties || "0"}</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Total Faculty Participants</td>
+                            <td className="border border-slate-300 p-3">{parsedDetails.faculties || "0"}</td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Faculty Coordinator</td>
-                            <td className="border border-slate-300 p-3 font-medium">{parsedDetails.coordinator || "-"}</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Faculty Coordinator</td>
+                            <td className="border border-slate-300 p-3">{parsedDetails.coordinator || "---"}</td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Report</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Report</td>
                             <td className="border border-slate-300 p-3 whitespace-pre-wrap text-justify leading-relaxed">
-                              {selectedReport.content}
+                              {parsedContent?.report || "---"}
                             </td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Feedback Analysis</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Feedback Analysis</td>
                             <td className="border border-slate-300 p-3 whitespace-pre-wrap">
-                              {parsedDetails.feedback || "-"}
+                              {parsedContent?.feedback || parsedDetails.feedback || "---"}
                             </td>
                           </tr>
                           <tr>
-                            <td className="border border-slate-300 p-3 font-bold bg-slate-50 text-slate-900 uppercase tracking-tight">Programme Outcome</td>
+                            <td className="border border-slate-300 p-3 font-bold bg-slate-50">Programme Outcome</td>
                             <td className="border border-slate-300 p-3 whitespace-pre-wrap">
-                              {Array.isArray(parsedDetails.outcome) ? (
+                              {Array.isArray(parsedContent?.outcome || parsedDetails.outcome) ? (
                                 <ul className="list-none p-0 m-0 space-y-1">
-                                  {parsedDetails.outcome.map((item: string, idx: number) => item && (
-                                    <li key={idx} className="flex gap-2 text-slate-700">
-                                      <span className="shrink-0 text-slate-950 font-black">•</span>
-                                      <span className="leading-tight">{item}</span>
+                                  {(parsedContent?.outcome || parsedDetails.outcome).map((item: any, idx: number) => item && (
+                                    <li key={idx} className="flex gap-2">
+                                      <span className="shrink-0 text-slate-400 font-black">•</span>
+                                      <span>{item}</span>
                                     </li>
                                   ))}
                                 </ul>
                               ) : (
-                                parsedDetails.outcome || "-"
+                                parsedContent?.outcome || parsedDetails.outcome || "---"
                               )}
                             </td>
                           </tr>
@@ -458,16 +446,15 @@ export default function AdminReportsPage() {
                     <div className="mt-20" id="report-signatures">
                       <div className="flex justify-between text-xs font-bold mb-16 px-4">
                         <div className="text-center w-64 group">
-                          <div data-html2canvas-ignore="true" className="h-20 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
+                          <div className="h-24 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
                             (Physical Signature / Seal Area)
                           </div>
                           <div className="border-t-2 border-slate-900 pt-3 uppercase tracking-widest text-slate-900">
                             {organization?.signatureLeftLabel || "Event Coordinator"}
                           </div>
-                          <div className="mt-2 text-[9px] text-slate-400 font-mono">DATE: {new Date(selectedReport.createdAt).toLocaleDateString()}</div>
                         </div>
                         <div className="text-center w-64 group">
-                          <div data-html2canvas-ignore="true" className="h-20 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
+                          <div className="h-24 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
                             (Physical Signature / Seal Area)
                           </div>
                           <div className="border-t-2 border-slate-900 pt-3 uppercase tracking-widest text-slate-900">
@@ -478,24 +465,19 @@ export default function AdminReportsPage() {
                               {organization.signatureRightName}
                             </div>
                           )}
-                          <div className="mt-2 text-[9px] text-slate-400 font-mono uppercase">STAMP SECURED</div>
                         </div>
                       </div>
                     </div>
 
                     <div id="report-branding-footer">
                       {organization?.footerImage ? (
-                        <div className="flex justify-center pt-8 opacity-90 grayscale hover:grayscale-0 transition-all duration-300">
-                          <img 
-                            src={organization.footerImage} 
-                            className="max-h-[100px] object-contain" 
-                            alt="Custom Footer Branding" 
-                          />
+                        <div className="pt-4 border-t border-slate-100">
+                          <img src={organization.footerImage} className="w-full h-auto object-contain max-h-[100px]" alt="Organization footer" />
                         </div>
                       ) : (
-                         <p className="text-center text-[9px] sm:text-xs font-serif italic text-slate-400">
-                          &quot;{organization?.footerText || "Official Record of Institution"}&quot;
-                        </p>
+                        <div className="pt-4 border-t border-slate-100 text-center">
+                          <p className="text-[10px] text-slate-400 italic">{organization?.footerText || "Official Record of Institution"}</p>
+                        </div>
                       )}
                     </div>
                   </div>

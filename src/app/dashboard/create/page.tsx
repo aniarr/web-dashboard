@@ -607,7 +607,7 @@ export default function CreateReportPage() {
                     <div className="mt-20" id="report-signatures">
                       <div className="flex justify-between text-xs font-bold mb-16 px-4">
                         <div className="text-center w-64 group">
-                          <div data-html2canvas-ignore="true" className="h-20 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
+                          <div className="h-24 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
                             (Physical Signature / Seal Area)
                           </div>
                           <div className="border-t-2 border-slate-900 pt-3 uppercase tracking-widest text-slate-900">
@@ -615,7 +615,7 @@ export default function CreateReportPage() {
                           </div>
                         </div>
                         <div className="text-center w-64 group">
-                          <div data-html2canvas-ignore="true" className="h-20 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
+                          <div className="h-24 mb-2 border-2 border-dashed border-transparent group-hover:border-slate-100 rounded-xl flex items-center justify-center text-[10px] text-slate-200 italic font-normal">
                             (Physical Signature / Seal Area)
                           </div>
                           <div className="border-t-2 border-slate-900 pt-3 uppercase tracking-widest text-slate-900">
