@@ -64,6 +64,12 @@ const siteSettingsSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
+const otpSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  code: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now, index: { expires: 600 } }, // Expire after 10 minutes
+});
+
 const auditLogSchema = new mongoose.Schema({
   actorUserId: { type: String, default: undefined },
   actorEmail: { type: String, default: undefined },
@@ -126,11 +132,12 @@ auditLogSchema.set("toJSON", {
   },
 });
 
-const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
-const ReportModel = mongoose.models.Report || mongoose.model("Report", reportSchema);
-const OrganizationModel = mongoose.models.Organization || mongoose.model("Organization", organizationSchema);
-const SiteSettingsModel = mongoose.models.SiteSettings || mongoose.model("SiteSettings", siteSettingsSchema);
-const AuditLogModel = mongoose.models.AuditLog || mongoose.model("AuditLog", auditLogSchema);
+export const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
+export const ReportModel = mongoose.models.Report || mongoose.model("Report", reportSchema);
+export const OrganizationModel = mongoose.models.Organization || mongoose.model("Organization", organizationSchema);
+export const SiteSettingsModel = mongoose.models.SiteSettings || mongoose.model("SiteSettings", siteSettingsSchema);
+export const OtpModel = mongoose.models.Otp || mongoose.model("Otp", otpSchema);
+export const AuditLogModel = mongoose.models.AuditLog || mongoose.model("AuditLog", auditLogSchema);
 
 export async function ensureSeedData() {
   await connectToDatabase();
